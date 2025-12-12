@@ -14,14 +14,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ZAP API Scan - Force Authorization Header with HTTP Sender Script
-        uses: zaproxy/action-api-scan@v0.10.0
-        with:
-          format: openapi
-          target: zap/api/admin-adduser.yaml
-          allow_issue_writing: false  # Disable GitHub issue creation (causes 403 errors)
-          cmd_options: >-
-            -config script.scripts.httpsender.scripts=/zap/wrk/zap/scripts/add-auth-header.js
+      - name: Run ZAP API Scan Directly (Bypass Buggy Action)
+        run: |
+          docker run -v ${{ github.workspace }}:/zap/wrk/:rw \
+            -t ghcr.io/zaproxy/zaproxy:stable \
+            zap-api-scan.py \
+            -t /zap/wrk/zap/api/admin-adduser.yaml \
+            -f openapi \
+            -J /zap/wrk/report_json.json \
+            -w /zap/wrk/report_md.md \
+            -r /zap/wrk/report_html.html \
+            -a \
+            -config script.scripts.httpsender.scripts=/zap/wrk/zap/scripts/add-auth-header.js \
+            -config script.scripts.httpsender.engine=JavaScript
 
       - name: Upload ZAP Report
         if: always()
