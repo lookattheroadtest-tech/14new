@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: TestFire Admin AddUser
+  version: 1.0.0
+servers:
+  - url: https://demo.testfire.net
+
+paths:
+  /api/admin/addUser:
+    post:
+      operationId: addUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstname
+                - lastname
+                - username
+                - password1
+                - password2
+              properties:
+                firstname: { type: string }
+                lastname: { type: string }
+                username: { type: string }
+                password1: { type: string }
+                password2: { type: string }
+      responses:
+        '200': { description: Success }
