@@ -14,16 +14,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ZAP API Scan - Force Authorization Header with Script
+      - name: ZAP API Scan - Force Authorization Header with HTTP Sender Script
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           format: openapi
           target: zap/api/admin-adduser.yaml
-          alpha: true
-          attack_mode: true
-          timeout: 300
-          # This loads the script that forces your exact token on every request
-          cmd_options: -config ascan.scripts=/zap/wrk/zap/scripts/add-auth-header.js
+          allow_issue_writing: false  # Disable GitHub issue creation (causes 403 errors)
+          cmd_options: >-
+            -config script.scripts.httpsender.scripts=/zap/wrk/zap/scripts/add-auth-header.js
 
       - name: Upload ZAP Report
         if: always()
