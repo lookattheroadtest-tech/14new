@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: TestFire - Admin AddUser (Force Header via Replacer)
+  title: TestFire Admin AddUser
   version: 1.0.0
 servers:
   - url: https://demo.testfire.net
@@ -8,7 +8,6 @@ servers:
 paths:
   /api/admin/addUser:
     post:
-      summary: Add User (Admin)
       operationId: addUser
       requestBody:
         required: true
@@ -29,5 +28,4 @@ paths:
                 password1:  { type: string }
                 password2:  { type: string }
       responses:
-        '200':
-          description: Success
+        '200': { description: OK }
