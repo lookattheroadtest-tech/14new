@@ -13,17 +13,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ZAP API Scan (Admin AddUser with Fixed Token)
+      - name: ZAP API Scan - Admin AddUser (NO cmd_options)
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           format: openapi
           target: zap/api/admin-adduser.yaml
-          allow_issue_writing: false
-          cmd_options: >-
-            -a
-            -config scanner.attackOnStart=true
-            -config view.mode=attack
-            -config connection.timeoutInSecs=180
+          alpha: true           # ← replaces -a
+          attack_mode: true     # ← replaces -config scanner.attackOnStart=true + view.mode=attack
+          timeout: 300          # ← longer timeout
 
       - name: Upload ZAP Report
         if: always()
@@ -33,3 +30,4 @@ jobs:
           path: |
             report_html.html
             report_json.json
+            report_md.md
