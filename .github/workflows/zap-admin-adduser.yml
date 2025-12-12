@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'zap/api/openapi.yaml'
-      - 'zap/scripts/add-auth-header.js'
+      - 'zap/scripts/add-auth-header.py'
   workflow_dispatch:
 
 jobs:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ZAP API Scan with Forced Token (Direct Docker)
+      - name: ZAP API Scan with Fixed Token
         run: |
           docker run --rm -v ${{ github.workspace }}:/zap/wrk/:rw \
             ghcr.io/zaproxy/zaproxy:stable \
@@ -22,11 +22,11 @@ jobs:
             -t /zap/wrk/zap/api/openapi.yaml \
             -f openapi \
             -a \
-            --hook=/zap/wrk/zap/scripts/add-auth-header.js \
+            --hook=/zap/wrk/zap/scripts/add-auth-header.py \
             -r /zap/wrk/report_html.html \
             -J /zap/wrk/report_json.json
 
-      - name: Upload ZAP Report
+      - name: Upload Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -34,4 +34,3 @@ jobs:
           path: |
             report_html.html
             report_json.json
-          retention-days: 30
