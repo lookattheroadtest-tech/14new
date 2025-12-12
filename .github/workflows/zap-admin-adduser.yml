@@ -21,8 +21,8 @@ jobs:
             ghcr.io/zaproxy/zaproxy:stable \
             zap-full-scan.py \
             -t "https://example.com/api/admin/addUser" \
-            -r report_html.html \
-            -J report_json.json \
+            -r /zap/wrk/report_html.html \
+            -J /zap/wrk/report_json.json \
             -z "-config replacer.full_list(0).description=auth \
                 -config replacer.full_list(0).enabled=true \
                 -config replacer.full_list(0).matchtype=REQ_HEADER \
@@ -32,8 +32,8 @@ jobs:
 
       - name: Move reports to correct folder
         run: |
-          mv report_html.html zap/results/ || true
-          mv report_json.json zap/results/ || true
+          mv zap/results/report_html.html zap/results/ || true
+          mv zap/results/report_json.json zap/results/ || true
 
       - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
