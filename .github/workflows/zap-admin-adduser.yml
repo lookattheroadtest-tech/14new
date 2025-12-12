@@ -23,8 +23,8 @@ jobs:
             -f openapi \
             -a \
             --hook=/zap/wrk/zap/scripts/add-auth-header.py \
-            -r /zap/wrk/report_html.html \
-            -J /zap/wrk/report_json.json
+            -r /zap/results/report_html.html \
+            -J /zap/results/report_json.json
 
       - name: Upload Report
         if: always()
@@ -32,5 +32,5 @@ jobs:
         with:
           name: zap-admin-adduser-report
           path: |
-            report_html.html
-            report_json.json
+            zap/results/report_html.html
+            zap/results/report_json.json
