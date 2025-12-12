@@ -1,38 +1,15 @@
 openapi: 3.0.3
 info:
-  title: TestFire - Admin AddUser (Working Fixed Token)
+  title: TestFire - Admin AddUser (Force Header via Replacer)
   version: 1.0.0
 servers:
   - url: https://demo.testfire.net
 
-# THIS IS THE ONLY FORMAT THAT WORKS WITH YOUR TOKEN
-components:
-  securitySchemes:
-    fixedToken:
-      type: apiKey
-      in: header
-      name: Authorization
-# Critical: quote the entire token and add a space before it
-security:
-  - fixedToken: " YW5OdGFYUm86WkdWdGJ6RXlNelE9Oj9lPz8/P2c="
-
 paths:
   /api/admin/addUser:
     post:
-      summary: Add User (Admin) - Real Working Token
+      summary: Add User (Admin)
       operationId: addUser
-      parameters:
-        - name: Content-Type
-          in: header
-          required: true
-          schema:
-            type: string
-            example: application/json
-        - name: Accept
-          in: header
-          schema:
-            type: string
-            example: application/json
       requestBody:
         required: true
         content:
