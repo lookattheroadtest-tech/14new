@@ -1,9 +1,10 @@
-name: ZAP DAST - Admin AddUser (Working Token via Replacer)
+name: ZAP DAST - Admin AddUser (Fixed Token via Script)
 
 on:
   push:
     paths:
       - 'zap/api/admin-adduser.yaml'
+      - 'zap/scripts/add-auth-header.js'
   workflow_dispatch:
 
 jobs:
@@ -13,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ZAP API Scan - Force Authorization Header
+      - name: ZAP API Scan - Force Authorization Header with Script
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           format: openapi
@@ -21,12 +22,10 @@ jobs:
           alpha: true
           attack_mode: true
           timeout: 300
-          # THIS IS THE MAGIC LINE — forces your exact token on EVERY request
-          cmd_options: >-
-            -config replacer.full_list=https://raw.githubusercontent.com/zaproxy/zaproxy/develop/zap/src/main/resources/org/zaproxy/zap/extension/ascanrules/replacer.txt
-            -config replacer.addRule=Authorization:*=YW5OdGFYUm86WkdWdGJ6RXlNelE9Oj9lPz8/P2c=
+          # This loads the script that forces your exact token on every request
+          cmd_options: -config ascan.scripts=/zap/wrk/zap/scripts/add-auth-header.js
 
-      - name: Upload Report
+      - name: Upload ZAP Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -34,3 +33,5 @@ jobs:
           path: |
             report_html.html
             report_json.json
+            report_md.md
+          retention-days: 30
