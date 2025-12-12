@@ -1,32 +1,17 @@
-openapi: 3.0.3
-info:
-  title: TestFire Admin AddUser
-  version: 1.0.0
-servers:
-  - url: https://demo.testfire.net
+!AUTORUN
+# ZAP Autorun file — this is the ONLY way that works 100% in GitHub Actions right now
 
-paths:
-  /api/admin/addUser:
-    post:
-      operationId: addUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - firstname
-                - lastname
-                - username
-                - password1
-                - password2
-              properties:
-                firstname: { type: string }
-                lastname: { type: string }
-                username: { type: string }
-                password1: { type: string }
-                password2: { type: string }
-      responses:
-        '200':
-          description: Success
+# Load the OpenAPI definition
+- import /zap/wrk/zap/api/openapi.yaml
+
+# Load and enable the HTTP Sender script that forces your token
+- script load /zap/wrk/zap/scripts/add-auth-header.js -type httpsender
+- script enable add-auth-header.js
+
+# Start active scan on the imported API
+- ascan enableAllScanners
+- ascan scan https://demo.testfire.net
+
+# Generate reports
+- report -o /zap/wrk/report_html.html -format html
+- report -o /zap/wrk/report_json.json -format json
