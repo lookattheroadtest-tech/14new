@@ -1,4 +1,4 @@
-name: ZAP API DAST - Admin AddUser (Fixed Token)
+name: ZAP DAST - Admin AddUser (Working Token via Replacer)
 
 on:
   push:
@@ -13,16 +13,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ZAP API Scan - Admin AddUser (NO cmd_options)
+      - name: ZAP API Scan - Force Authorization Header
         uses: zaproxy/action-api-scan@v0.10.0
         with:
           format: openapi
           target: zap/api/admin-adduser.yaml
-          alpha: true           # ← replaces -a
-          attack_mode: true     # ← replaces -config scanner.attackOnStart=true + view.mode=attack
-          timeout: 300          # ← longer timeout
+          alpha: true
+          attack_mode: true
+          timeout: 300
+          # THIS IS THE MAGIC LINE — forces your exact token on EVERY request
+          cmd_options: >-
+            -config replacer.full_list=https://raw.githubusercontent.com/zaproxy/zaproxy/develop/zap/src/main/resources/org/zaproxy/zap/extension/ascanrules/replacer.txt
+            -config replacer.addRule=Authorization:*=YW5OdGFYUm86WkdWdGJ6RXlNelE9Oj9lPz8/P2c=
 
-      - name: Upload ZAP Report
+      - name: Upload Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -30,4 +34,3 @@ jobs:
           path: |
             report_html.html
             report_json.json
-            report_md.md
