@@ -22,10 +22,11 @@ paths:
                 - password1
                 - password2
               properties:
-                firstname:  { type: string }
-                lastname:   { type: string }
-                username:   { type: string }
-                password1:  { type: string }
-                password2:  { type: string }
+                firstname: { type: string }
+                lastname: { type: string }
+                username: { type: string }
+                password1: { type: string }
+                password2: { type: string }
       responses:
-        '200': { description: OK }
+        '200':
+          description: Success
