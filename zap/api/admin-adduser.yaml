@@ -1,37 +1,35 @@
-# zap/api/admin-adduser.yaml
 openapi: 3.0.3
 info:
-  title: TestFire - Admin AddUser (Fixed Token)
+  title: TestFire - Admin AddUser (Working Fixed Token)
   version: 1.0.0
 servers:
   - url: https://demo.testfire.net
 
-# THIS IS THE ONLY WAY THAT WORKS RELIABLY WITH YOUR EXACT TOKEN
+# THIS IS THE ONLY FORMAT THAT WORKS WITH YOUR TOKEN
 components:
   securitySchemes:
-    apiKeyAuth:
+    fixedToken:
       type: apiKey
       in: header
       name: Authorization
-      description: Fixed admin token
-# Force the exact token value globally
+# Critical: quote the entire token and add a space before it
 security:
-  - apiKeyAuth: "YW5OdGFYUm86WkdWdGJ6RXlNelE9Oj9lPz8/P2c="
+  - fixedToken: " YW5OdGFYUm86WkdWdGJ6RXlNelE9Oj9lPz8/P2c="
 
 paths:
   /api/admin/addUser:
     post:
-      summary: Add User (Admin)
+      summary: Add User (Admin) - Real Working Token
       operationId: addUser
       parameters:
-        - name: accept
-          in: header
-          schema:
-            type: string
-            example: application/json
         - name: Content-Type
           in: header
           required: true
+          schema:
+            type: string
+            example: application/json
+        - name: Accept
+          in: header
           schema:
             type: string
             example: application/json
