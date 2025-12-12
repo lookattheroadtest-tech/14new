@@ -16,16 +16,20 @@ jobs:
 
       - name: ZAP API Scan with Fixed Token
         run: |
+          # Create results folder in your repo (host side)
           mkdir -p zap/results
+
+          # Run ZAP scan inside Docker
           docker run --rm -v ${{ github.workspace }}:/zap/wrk/:rw \
             ghcr.io/zaproxy/zaproxy:stable \
-            zap-api-scan.py \
-            -t /zap/wrk/zap/api/openapi.yaml \
-            -f openapi \
-            -a \
-            --hook=/zap/wrk/zap/scripts/add-auth-header.py \
-            -r /zap/wrk/zap/results/report_html.html \
-            -J /zap/wrk/zap/results/report_json.json
+            sh -c "chown -R zap:zap /zap/wrk/zap/results && \
+                   zap-api-scan.py \
+                     -t /zap/wrk/zap/api/openapi.yaml \
+                     -f openapi \
+                     -a \
+                     --hook=/zap/wrk/zap/scripts/add-auth-header.py \
+                     -r /zap/wrk/zap/results/report_html.html \
+                     -J /zap/wrk/zap/results/report_json.json"
 
       - name: Upload Report
         if: always()
