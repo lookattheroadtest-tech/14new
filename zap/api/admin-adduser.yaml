@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: TestFire - Admin AddUser (Fixed Token)
+  version: 1.0.0
+servers:
+  - url: https://demo.testfire.net
+
+# This is the only way that reliably works with action-api-scan@v0.10.0
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  security:
+    - bearerAuth: YW5OdGFYUm86WkdWdGJ6RXlNelE9Oj9lPz8/P2c=   # ← your exact token
+
+paths:
+  /api/admin/addUser:
+    post:
+      summary: Admin Add User
+      operationId: addUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstname
+                - lastname
+                - username
+                - password1
+                - password2
+              properties:
+                firstname:  { type: string }
+                lastname:   { type: string }
+                username:   { type: string }
+                password1:  { type: string }
+                password2:  { type: string }
+      responses:
+        '200':
+          description: Success
