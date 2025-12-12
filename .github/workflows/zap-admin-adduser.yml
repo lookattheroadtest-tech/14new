@@ -1,4 +1,4 @@
-name: ZAP DAST - Admin AddUser (Fixed Token via Script)
+name: ZAP DAST - Admin AddUser (Working Token)
 
 on:
   push:
@@ -14,19 +14,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run ZAP API Scan Directly (Bypass Buggy Action)
+      - name: ZAP Full Scan with Fixed Token via HTTP Sender Script
         run: |
-          docker run -v ${{ github.workspace }}:/zap/wrk/:rw \
+          docker run --rm -v ${{ github.workspace }}:/zap/wrk/:rw \
             -t ghcr.io/zaproxy/zaproxy:stable \
-            zap-api-scan.py \
-            -t /zap/wrk/zap/api/admin-adduser.yaml \
-            -f openapi \
-            -J /zap/wrk/report_json.json \
-            -w /zap/wrk/report_md.md \
-            -r /zap/wrk/report_html.html \
-            -a \
-            -config script.scripts.httpsender.scripts=/zap/wrk/zap/scripts/add-auth-header.js \
-            -config script.scripts.httpsender.engine=JavaScript
+            zap.sh -cmd \
+            -autorun /zap/wrk/zap/api/admin-adduser.yaml
 
       - name: Upload ZAP Report
         if: always()
@@ -34,7 +27,7 @@ jobs:
         with:
           name: zap-admin-adduser-report
           path: |
-            report_html.html
-            report_json.json
-            report_md.md
+            /home/runner/work/14new/14new/*.html
+            /home/runner/work/14new/14new/*.json
+            /home/runner/work/14new/14new/*.xml
           retention-days: 30
