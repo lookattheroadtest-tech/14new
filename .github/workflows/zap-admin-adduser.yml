@@ -1,0 +1,35 @@
+name: ZAP API DAST - Admin AddUser (Fixed Token)
+
+on:
+  push:
+    paths:
+      - 'zap/api/admin-adduser.yaml'
+  workflow_dispatch:
+
+jobs:
+  zap-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: ZAP API Scan (Admin AddUser with Fixed Token)
+        uses: zaproxy/action-api-scan@v0.10.0
+        with:
+          format: openapi
+          target: zap/api/admin-adduser.yaml
+          allow_issue_writing: false
+          cmd_options: >-
+            -a
+            -config scanner.attackOnStart=true
+            -config view.mode=attack
+            -config connection.timeoutInSecs=180
+
+      - name: Upload ZAP Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-admin-adduser-report
+          path: |
+            report_html.html
+            report_json.json
