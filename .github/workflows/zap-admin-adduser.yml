@@ -1,18 +1,17 @@
 name: ZAP DAST - Admin AddUser (Working Token)
-
 on:
   workflow_dispatch:
-
 jobs:
   zap-scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create results directory
-        run: mkdir -p zap/results
+      - name: Create results directory and fix permissions
+        run: |
+          mkdir -p zap/results
+          chmod 777 zap/results  # Make directory fully writable to avoid UID mismatch issues
 
       - name: Run ZAP Scan
         run: |
@@ -21,19 +20,14 @@ jobs:
             ghcr.io/zaproxy/zaproxy:stable \
             zap-full-scan.py \
             -t "https://example.com/api/admin/addUser" \
-            -r /zap/wrk/report_html.html \
-            -J /zap/wrk/report_json.json \
+            -r report_html.html \
+            -J report_json.json \
             -z "-config replacer.full_list(0).description=auth \
                 -config replacer.full_list(0).enabled=true \
                 -config replacer.full_list(0).matchtype=REQ_HEADER \
                 -config replacer.full_list(0).matchstr=Authorization \
                 -config replacer.full_list(0).regex=false \
-                -config replacer.full_list(0).replacement=Bearer YOUR_TOKEN"
-
-      - name: Move reports to correct folder
-        run: |
-          mv zap/results/report_html.html zap/results/ || true
-          mv zap/results/report_json.json zap/results/ || true
+                -config replacer.full_list(0).replacement=Bearer YW5OdGFYUm86WkdWdGJ6RXlNelE9Oj9GPz8pPw=="
 
       - name: Upload ZAP Reports
         uses: actions/upload-artifact@v4
